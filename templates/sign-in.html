@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+Join Us
+{% endblock title %}
+
+{% block main %}
+<section>
+    {% block before_form %}
+    {% endblock before_form %}
+</section>
+<section>
+    {% include "form.html" %}
+</section>
+<section>
+    {% block after_form %}
+    {% endblock after_form %}
+</section>
+{% endblock main %}
