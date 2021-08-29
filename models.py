@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import UserMixin
-from sqlalchemy_utils import EmailType, PasswordType
+from sqlalchemy_utils import EmailType
+from wtforms.fields.simple import PasswordField
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -18,7 +19,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(EmailType, unique=True, nullable=False)
-    password = db.Column(PasswordType(schemes=["bcrypt"]), nullable=False)
+    password = db.Column(db.String(), nullable=False, info={"form_field_class": PasswordField})
 
     tasks = db.relationship("Task", backref="user")
     freetimes = db.relationship("Freetime", backref="user")
@@ -78,3 +79,11 @@ class Freetime(db.Model):
 
     def __repr__(self):
         return f"<Freetime #{self.id} start={self.start_time} end={self.end_time} user_id={self.user_id}>"
+    
+    @property
+    def pretty_start(self):
+        return self.start_time.strftime("%b %d, %Y @ %H:%M:%S")
+    
+    @property
+    def pretty_end(self):
+        return self.end_time.strftime("%b %d, %Y @ %H:%M:%S")

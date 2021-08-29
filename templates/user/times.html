@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+Times
+{% endblock title %}
+
+{% block main %}
+<h2>Available times</h2>
+<button id="add-freetime" type="button">Add new freetime</button>
+<section class="create-freetime is-hidden">
+    <h3>New freetime</h3>
+    <input id="select-times" type="date">
+    <p id="freetime-err" class="is-hidden"></p>
+    <ul class="times">
+        <li><b>Start:</b> <span id="start-time">not selected yet</span></li>
+        <li><b>End:</b> <span id="end-time">not selected yet</span></li>
+    </ul>
+    <button id="create-freetime" type="button">Add</button>
+    <button id="edit-freetime" class="is-hidden" type="button">Save</button>
+</section>
+<section class="freetimes">
+    {% if freetimes %}
+    <h3>Your freetimes</h3>
+    <ul>
+        {% for freetime in freetimes %}
+        <li data-id="{{ freetime.id }}">
+            <span>{{ freetime.pretty_start }} - {{ freetime.pretty_end}}</span>
+            <button type="button">X</button>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h3>You don't have any freetimes</h3>
+    {% endif %}
+</section>
+{% endblock main %}

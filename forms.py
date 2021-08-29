@@ -15,3 +15,10 @@ class CreateUserForm(ModelForm):
     """form for making users"""
     class Meta:
         model = User
+
+class LoginUserForm(ModelForm):
+    """form for logging in users"""
+    class Meta:
+        model = User
+        only = ["email", "password"]
+        unique_validator = None

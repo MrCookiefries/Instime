@@ -1,19 +1,17 @@
 {% extends "base.html" %}
 
 {% block title %}
-Join Us
+{{ submit }}
 {% endblock title %}
 
 {% block main %}
-<section>
-    {% block before_form %}
-    {% endblock before_form %}
-</section>
-<section>
-    {% include "form.html" %}
-</section>
-<section>
-    {% block after_form %}
-    {% endblock after_form %}
-</section>
+<h2>{{ submit }}</h2>
+{% include "form.html" %}
+<small>
+    {% if submit == "Login" %}
+    <a href="{{ url_for('register') }}">Don't have an account?</a>
+    {% else %}
+    <a href="{{ url_for('login') }}">Already have an account?</a>
+    {% endif %}
+</small>
 {% endblock main %}

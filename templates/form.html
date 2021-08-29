@@ -1,11 +1,15 @@
 <form method="POST">
 	{{ form.hidden_tag() }}
-	{% for field in form if field.widget.input_type != 'hidden' %}
+	{% for field in form if field.widget.input_type != "hidden" %}
 		<div>
 			<label for="{{ field.id }}">
 				{{- field.label.text | title -}}
 			</label>
+			{% if field == form.password %}
+			{{ field(autocomplete="on") }}
+			{% else %}
 			{{ field }}
+			{% endif %}
 			{% if field.errors %}
 				<ul>
 		  		{% for error in field.errors %}

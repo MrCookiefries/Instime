@@ -5,5 +5,22 @@ Home
 {% endblock title %}
 
 {% block main %}
-<h1>Hello</h1>
+<h2>Hello {{ current_user.name or "Stranger" }}</h2>
+{% if current_user.is_authenticated %}
+<div class="action-buttons">
+    <a href="{{ url_for('freetimes_view') }}">
+        <button type="button">Manage Available Times</button>
+    </a>
+</div>
+{% else %}
+<h3>Please Register/Login to access the rest of the site.</h3>
+<div class="sign-in-buttons">
+    <a href="{{ url_for('register') }}">
+        <button type="button">Register</button>
+    </a>
+    <a href="{{ url_for('login') }}">
+        <button type="button">Login</button>
+    </a>
+</div>
+{% endif %}
 {% endblock main %}
