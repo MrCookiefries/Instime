@@ -1,23 +1,22 @@
-<form method="POST">
-	{{ form.hidden_tag() }}
-	{% for field in form if field.widget.input_type != "hidden" %}
-		<div>
-			<label for="{{ field.id }}">
-				{{- field.label.text | title -}}
-			</label>
-			{% if field == form.password %}
-			{{ field(autocomplete="on") }}
-			{% else %}
-			{{ field }}
-			{% endif %}
-			{% if field.errors %}
-				<ul>
-		  		{% for error in field.errors %}
-					<li class="error">{{ error }}</li>
-		  		{% endfor %}
-				</ul>
-			{% endif %}
-		</div>
-	{% endfor %}
-	<button type="submit">{{ submit }}</button>
-</form>
+{% macro signin_field(field, icon, type="input") %}
+    <div class="field">
+        <label class="label" for="{{ field.id }}">
+            {{- field.label.text | title -}}
+        </label>
+        <div class="control has-icons-left">
+            {% if field == form.password %}
+                {{ field(autocomplete="on", class_=""+type) }}
+            {% else %}
+                {{ field(class_=""+type) }}
+            {% endif %}
+            <span class="icon is-left">
+                <i class="fas fa-{{ icon }}"></i>
+            </span>
+        </div>
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endmacro %}

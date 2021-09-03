@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+Tasks
+{% endblock title %}
+
+{% block main %}
+<h2>Tasks</h2>
+<button id="add-task" type="button">Add new task</button>
+<section id="task-form" class="is-hidden">
+    {% include "user/task-form.html" %}
+</section>
+<section class="tasks">
+    {% if tasks %}
+    <h3>Your tasks</h3>
+    <p>Sort</p>
+    <div class="buttons">
+        <a href="{{ url_for('tasks_view', sort='priority') }}">
+            <button type="button">Priority</button>
+        </a>
+        <a href="{{ url_for('tasks_view', sort='status') }}">
+            <button type="button">Status</button>
+        </a>
+        <a href="{{ url_for('tasks_view', sort='estimate') }}">
+            <button type="button">Time Estimate</button>
+        </a>
+    </div>
+    <ul class="tasks">
+        {% for task in tasks %}
+        <li data-id="{{ task.id }}">
+            <a href="{{ url_for('update_task', id=task.id) }}">{{ task.title }}</a>
+            <button type="button">X</button>
+            <details>
+                <summary>Expand Details</summary>
+                <ul class="details">
+                    <li><b>Description:</b> {{ task.description }}</li>
+                    <li><b>Status:</b> {{ task.status }}</li>
+                    <li><b>Priority:</b> {{ task.priority }}</li>
+                    <li><b>Time estimate:</b>  {{ task.pretty_estimate }}</li>
+                </ul>
+            </details>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h3>You don't have any tasks</h3>
+    {% endif %}
+</section>
+{% endblock main %}

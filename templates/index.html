@@ -11,15 +11,25 @@ Home
     <a href="{{ url_for('freetimes_view') }}">
         <button type="button">Manage Available Times</button>
     </a>
+    <a href="{{ url_for('tasks_view') }}">
+        <button type="button">Manage Your Tasks</button>
+    </a>
+    <a href="{{ url_for('plans_view') }}">
+        <button type="button">Manage Your Plans</button>
+    </a>
 </div>
+<section>
+    <button class="button" id="quotes-button" type="button">Get Quote</button>
+    <div id="quotes"></div>
+</section>
 {% else %}
 <h3>Please Register/Login to access the rest of the site.</h3>
-<div class="sign-in-buttons">
+<div class="buttons">
     <a href="{{ url_for('register') }}">
-        <button type="button">Register</button>
+        <button class="button is-rounded is-outlined is-link" type="button">Register</button>
     </a>
     <a href="{{ url_for('login') }}">
-        <button type="button">Login</button>
+        <button class="button is-rounded is-outlined is-link" type="button">Login</button>
     </a>
 </div>
 {% endif %}

@@ -2,7 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import UserMixin
 from sqlalchemy_utils import EmailType
-from wtforms.fields.simple import PasswordField
+from wtforms.fields.simple import PasswordField, TextAreaField
+from dateutil import tz
+from sqlalchemy import nullslast
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -47,9 +49,11 @@ class User(UserMixin, db.Model):
 
 blocks = db.Table(
     "blocks",
-    db.Column("task_id", db.Integer, db.ForeignKey("tasks.id"), primary_key=True),
-    db.Column("freetime_id", db.Integer, db.ForeignKey("freetimes.id"), primary_key=True)
+    db.Column("task_id", db.Integer, db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
+    db.Column("freetime_id", db.Integer, db.ForeignKey("freetimes.id", ondelete="cascade"), primary_key=True)
 )
+
+STATUSES = ("pending", "partial", "done")
 
 class Task(db.Model):
     """model for tasks"""
@@ -57,16 +61,42 @@ class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(30), nullable=False)
-    description = db.Column(db.String(250), nullable=False)
-    status = db.Column(db.String(10), nullable=False, default="Pending") # "pending" "planned" "done"
-    time_estimate = db.Column(db.Integer) # null means they don't know
-    priority = db.Column(db.Integer, nullable=False, default=0) # 0-9 (low-high)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    description = db.Column(db.String(250), nullable=False, info={"form_field_class": TextAreaField})
+    status = db.Column(db.String(10), nullable=False, default=STATUSES[0], info={
+        'choices': [(s, s.title()) for s in STATUSES]
+    })
+    time_estimate = db.Column(db.Integer, info={
+        'label': 'time estimate (minutes)',
+        "min": 1
+    })
+    priority = db.Column(db.Integer, nullable=False, default=0, info={
+        'choices': [(i, i) for i in range(10)],
+        "label": "priority (0 low - 9 high)"
+        })
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="cascade"), nullable=False)
 
     freetimes = db.relationship("Freetime", secondary=blocks, backref="tasks")
 
     def __repr__(self):
         return f"<Task #{self.id} {self.title} ({self.status}) user_id={self.user_id}>"
+    
+    @property
+    def pretty_estimate(self):
+        total = self.time_estimate
+        if not total: return
+        minutes = total % 60
+        hours = (total - minutes) / 60
+        return f"{int(hours)} hours & {minutes} minutes"
+    
+    @classmethod
+    def get_user_tasks_by_sort(cls, user, sort):
+        """returns tasks by user in a sorted fashion"""
+        query = cls.query.filter(cls.user_id == user.id)
+        if sort == "status":
+            return query.order_by(cls.status, cls.priority.desc()).all()
+        if sort == "priority":
+            return query.order_by(cls.priority.desc(), nullslast(cls.time_estimate.desc()))
+        return query.order_by(nullslast(cls.time_estimate.desc()), cls.priority.desc())
 
 class Freetime(db.Model):
     """model for freetimes"""
@@ -75,15 +105,17 @@ class Freetime(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="cascade"), nullable=False)
 
     def __repr__(self):
         return f"<Freetime #{self.id} start={self.start_time} end={self.end_time} user_id={self.user_id}>"
     
     @property
     def pretty_start(self):
-        return self.start_time.strftime("%b %d, %Y @ %H:%M:%S")
+        utc = self.start_time.replace(tzinfo=tz.tzutc())
+        return utc.astimezone(tz.tzlocal()).strftime("%b %d, %Y @ %H:%M")
     
     @property
     def pretty_end(self):
-        return self.end_time.strftime("%b %d, %Y @ %H:%M:%S")
+        utc = self.end_time.replace(tzinfo=tz.tzutc())
+        return utc.astimezone(tz.tzlocal()).strftime("%b %d, %Y @ %H:%M")

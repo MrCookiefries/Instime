@@ -8,6 +8,7 @@
         Instime - {% block title %}{% endblock title %}
     </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/static/lib/bulma-calendar.min.css">
 </head>
 <body>
@@ -15,6 +16,9 @@
         <ul>
             <li><a href="{{ url_for('home_page') }}">Home</a></li>
             {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('freetimes_view') }}">Freetimes</a></li>
+            <li><a href="{{ url_for('tasks_view') }}">Tasks</a></li>
+            <li><a href="{{ url_for('plans_view') }}">Plans</a></li>
             <li>
                 <form action="{{ url_for('logout') }}" method="post">
                     <button type="submit">Logout</button>
@@ -35,6 +39,7 @@
         </ul>
         {% endif %}
     {% endwith %}
+    {# add flashed messages #}
     <main>
         {% block main %}
         {% endblock main %}

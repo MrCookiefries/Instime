@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Times
+Freetimes
 {% endblock title %}
 
 {% block main %}
@@ -10,13 +10,28 @@ Times
 <section class="create-freetime is-hidden">
     <h3>New freetime</h3>
     <input id="select-times" type="date">
-    <p id="freetime-err" class="is-hidden"></p>
+    <p id="create-freetime-err" class="is-hidden"></p>
     <ul class="times">
-        <li><b>Start:</b> <span id="start-time">not selected yet</span></li>
-        <li><b>End:</b> <span id="end-time">not selected yet</span></li>
+        <li><b>Start:</b> <span id="create-start-time">not selected yet</span></li>
+        <li><b>End:</b> <span id="create-end-time">not selected yet</span></li>
     </ul>
     <button id="create-freetime" type="button">Add</button>
-    <button id="edit-freetime" class="is-hidden" type="button">Save</button>
+    <a href="{{ url_for('freetimes_view') }}">
+        <button type="button">Cancel</button>
+    </a>
+</section>
+<section class="edit-freetime is-hidden">
+    <h3>Edit freetime</h3>
+    <input id="edit-times" type="date">
+    <p id="edit-freetime-err" class="is-hidden"></p>
+    <ul class="times">
+        <li><b>Start:</b> <span id="edit-start-time">not selected yet</span></li>
+        <li><b>End:</b> <span id="edit-end-time">not selected yet</span></li>
+    </ul>
+    <button id="edit-freetime" type="button">Save</button>
+    <a href="{{ url_for('freetimes_view') }}">
+        <button type="button">Cancel</button>
+    </a>
 </section>
 <section class="freetimes">
     {% if freetimes %}
@@ -34,3 +49,4 @@ Times
     {% endif %}
 </section>
 {% endblock main %}
+{# JS times show up right, but when Python displays them +5 hours #}

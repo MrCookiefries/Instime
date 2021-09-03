@@ -1,0 +1,29 @@
+{% macro task_field(field) %}
+<div>
+    <label for="{{ field.id }}">
+        {{- field.label.text | title -}}
+    </label>
+    {% if field == form.password %}
+        {{ field(autocomplete="on") }}
+    {% else %}
+        {{ field }}
+    {% endif %}
+    {% if field.errors %}
+        <ul>
+        {% for error in field.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endmacro %}
+<form method="POST">
+	{{ form.hidden_tag() }}
+	{{ task_field(form.title) }}
+    {{ task_field(form.description) }}
+    {{ task_field(form.status) }}
+    {{ task_field(form.time_estimate) }}
+    {{ task_field(form.priority) }}
+    {{ task_field(form.freetimes) }}
+	<button type="submit">{{ submit }}</button>
+</form>
