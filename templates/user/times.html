@@ -5,48 +5,74 @@ Freetimes
 {% endblock title %}
 
 {% block main %}
-<h2>Available times</h2>
-<button id="add-freetime" type="button">Add new freetime</button>
-<section class="create-freetime is-hidden">
-    <h3>New freetime</h3>
-    <input id="select-times" type="date">
-    <p id="create-freetime-err" class="is-hidden"></p>
-    <ul class="times">
-        <li><b>Start:</b> <span id="create-start-time">not selected yet</span></li>
-        <li><b>End:</b> <span id="create-end-time">not selected yet</span></li>
-    </ul>
-    <button id="create-freetime" type="button">Add</button>
-    <a href="{{ url_for('freetimes_view') }}">
-        <button type="button">Cancel</button>
-    </a>
+<h2 class="title is-2 has-text-primary">Available times</h2>
+<button class="mb-4 button is-link is-outlined" id="add-freetime" type="button">Add new freetime</button>
+<section class="create-freetime is-hidden box">
+    <h3 class="subtitle is-4 has-text-info">New freetime</h3>
+    <div class="field">
+        <div class="control">
+            <input class="input" id="select-times" type="date">
+        </div>
+    </div>
+    <p id="create-freetime-err" class="is-hidden help is-danger"></p>
+    <div class="content">
+        <ul class="times">
+            <li><b>Start:</b> <span id="create-start-time">not selected yet</span></li>
+            <li><b>End:</b> <span id="create-end-time">not selected yet</span></li>
+        </ul>
+    </div>
+    <div class="buttons columns">
+        <div class="column is-narrow">
+            <button class="button is-link" id="create-freetime" type="button">Add</button>
+        </div>
+        <div class="column is-narrow">
+            <a href="{{ url_for('freetimes_view') }}">
+                <button class="button is-warning" type="button">Cancel</button>
+            </a>
+        </div>
+    </div>
 </section>
 <section class="edit-freetime is-hidden">
-    <h3>Edit freetime</h3>
-    <input id="edit-times" type="date">
-    <p id="edit-freetime-err" class="is-hidden"></p>
-    <ul class="times">
-        <li><b>Start:</b> <span id="edit-start-time">not selected yet</span></li>
-        <li><b>End:</b> <span id="edit-end-time">not selected yet</span></li>
-    </ul>
-    <button id="edit-freetime" type="button">Save</button>
-    <a href="{{ url_for('freetimes_view') }}">
-        <button type="button">Cancel</button>
-    </a>
+    <h3 class="subtitle is-4 has-text-info">Edit freetime</h3>
+    <div class="field">
+        <div class="control">
+            <input class="input" id="edit-times" type="date">
+        </div>
+    </div>
+    <p id="edit-freetime-err" class="is-hidden help is-danger"></p>
+    <div class="content">
+        <ul class="times">
+            <li><b>Start:</b> <span id="edit-start-time">not selected yet</span></li>
+            <li><b>End:</b> <span id="edit-end-time">not selected yet</span></li>
+        </ul>
+    </div>
+    <div class="buttons columns">
+        <div class="column is-narrow">
+            <button class="button is-link" id="edit-freetime" type="button">Save</button>
+        </div>
+        <div class="column is-narrow">
+            <a href="{{ url_for('freetimes_view') }}">
+                <button class="button is-warning" type="button">Cancel</button>
+            </a>
+        </div>
+    </div>
 </section>
-<section class="freetimes">
+<section class="freetimes box">
     {% if freetimes %}
-    <h3>Your freetimes</h3>
-    <ul>
-        {% for freetime in freetimes %}
-        <li data-id="{{ freetime.id }}">
-            <span>{{ freetime.pretty_start }} - {{ freetime.pretty_end}}</span>
-            <button type="button">X</button>
-        </li>
-        {% endfor %}
-    </ul>
+    <h3 class="title is-4 has-text-info">Your freetimes</h3>
+    <div class="content">
+        <small class="help">Click a freetime to edit it.</small>
+        <ul>
+            {% for freetime in freetimes %}
+            <li class="is-clickable mb-4" data-id="{{ freetime.id }}">
+                <span>{{ freetime.pretty_start }} - {{ freetime.pretty_end}}</span>
+                <button class="delete is-medium has-background-danger" type="button"></button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
     {% else %}
-    <h3>You don't have any freetimes</h3>
+    <h3 class="title is-4">You don't have any freetimes</h3>
     {% endif %}
 </section>
 {% endblock main %}
-{# JS times show up right, but when Python displays them +5 hours #}

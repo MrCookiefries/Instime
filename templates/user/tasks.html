@@ -5,45 +5,53 @@ Tasks
 {% endblock title %}
 
 {% block main %}
-<h2>Tasks</h2>
-<button id="add-task" type="button">Add new task</button>
-<section id="task-form" class="is-hidden">
+<h2 class="title is-2 has-text-primary">Tasks</h2>
+<button class="mb-4 button is-link is-outlined" id="add-task" type="button">Add new task</button>
+<section id="task-form" class="is-hidden box">
     {% include "user/task-form.html" %}
 </section>
-<section class="tasks">
+<section class="tasks box">
     {% if tasks %}
-    <h3>Your tasks</h3>
-    <p>Sort</p>
-    <div class="buttons">
-        <a href="{{ url_for('tasks_view', sort='priority') }}">
-            <button type="button">Priority</button>
-        </a>
-        <a href="{{ url_for('tasks_view', sort='status') }}">
-            <button type="button">Status</button>
-        </a>
-        <a href="{{ url_for('tasks_view', sort='estimate') }}">
-            <button type="button">Time Estimate</button>
-        </a>
+    <h3 class="subtitle is-4 has-text-info">Your tasks</h3>
+    <p class="is-size-5 mb-2">Reorder your tasks by</p>
+    <div class="field is-grouped">
+        <div class="control">
+            <a href="{{ url_for('tasks_view', sort='priority') }}">
+                <button class="button is-small is-dark is-outlined" type="button">Priority</button>
+            </a>
+        </div>
+        <div class="control">
+            <a href="{{ url_for('tasks_view', sort='status') }}">
+                <button class="button is-small is-dark is-outlined" type="button">Status</button>
+            </a>
+        </div>
+        <div class="control">
+            <a href="{{ url_for('tasks_view', sort='estimate') }}">
+                <button class="button is-small is-dark is-outlined" type="button">Time Estimate</button>
+            </a>
+        </div>
     </div>
     <ul class="tasks">
         {% for task in tasks %}
-        <li data-id="{{ task.id }}">
-            <a href="{{ url_for('update_task', id=task.id) }}">{{ task.title }}</a>
-            <button type="button">X</button>
-            <details>
-                <summary>Expand Details</summary>
-                <ul class="details">
-                    <li><b>Description:</b> {{ task.description }}</li>
-                    <li><b>Status:</b> {{ task.status }}</li>
-                    <li><b>Priority:</b> {{ task.priority }}</li>
-                    <li><b>Time estimate:</b>  {{ task.pretty_estimate }}</li>
-                </ul>
-            </details>
+        <li class="mb-4" data-id="{{ task.id }}">
+            <a class="is-size-5" href="{{ url_for('update_task', id=task.id) }}">{{ task.title }}</a>
+            <button class="delete is-large has-background-danger" type="button"></button>
+            <div class="content">
+                <details>
+                    <summary class="is-clickable">Expand Details</summary>
+                    <ul class="details">
+                        <li><b>Description:</b> {{ task.description }}</li>
+                        <li><b>Status:</b> {{ task.status }}</li>
+                        <li><b>Priority:</b> {{ task.priority }}</li>
+                        <li><b>Time estimate:</b>  {{ task.pretty_estimate }}</li>
+                    </ul>
+                </details>
+            </div>
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <h3>You don't have any tasks</h3>
+    <h3 class="subtitle is-4">You don't have any tasks</h3>
     {% endif %}
 </section>
 {% endblock main %}

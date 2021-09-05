@@ -5,32 +5,49 @@ Home
 {% endblock title %}
 
 {% block main %}
-<h2>Hello {{ current_user.name or "Stranger" }}</h2>
+<h1 class="title is-1 has-text-primary">Instime</h1>
+<h2 class="subtitle is-3 has-text-info">Hello {{ current_user.name or "Stranger" }}</h2>
 {% if current_user.is_authenticated %}
-<div class="action-buttons">
-    <a href="{{ url_for('freetimes_view') }}">
-        <button type="button">Manage Available Times</button>
-    </a>
-    <a href="{{ url_for('tasks_view') }}">
-        <button type="button">Manage Your Tasks</button>
-    </a>
-    <a href="{{ url_for('plans_view') }}">
-        <button type="button">Manage Your Plans</button>
-    </a>
+<div class="box mb-6">
+    <h3 class="subtitle is-5">Things to manage</h3>
+    <div class="buttons columns">
+        <div class="column is-narrow">
+            <a href="{{ url_for('freetimes_view') }}">
+                <button class="button is-outlined is-link" type="button">Available Times</button>
+            </a>
+        </div>
+        <div class="column is-narrow">
+            <a href="{{ url_for('tasks_view') }}">
+                <button class="button is-outlined is-link" type="button">Your Tasks</button>
+            </a>
+        </div>
+        <div class="column is-narrow">
+            <a href="{{ url_for('plans_view') }}">
+                <button class="button is-outlined is-link" type="button">Your Plans</button>
+            </a>
+        </div>
+    </div>
 </div>
-<section>
-    <button class="button" id="quotes-button" type="button">Get Quote</button>
-    <div id="quotes"></div>
+<section class="box">
+    <h3 class="subtitle is-5">Wanna read a random quote?</h3>
+    <button class="button is-link" id="quotes-button" type="button">Get Quote</button>
+    <div class="content mt-4" id="quotes"></div>
 </section>
 {% else %}
-<h3>Please Register/Login to access the rest of the site.</h3>
-<div class="buttons">
-    <a href="{{ url_for('register') }}">
-        <button class="button is-rounded is-outlined is-link" type="button">Register</button>
-    </a>
-    <a href="{{ url_for('login') }}">
-        <button class="button is-rounded is-outlined is-link" type="button">Login</button>
-    </a>
+<div class="box">
+<h3 class="subtitle is-5">Please Register or Login to access the rest of the site.</h3>
+<div class="buttons columns">
+    <div class="column is-narrow">
+        <a class="mr-4" href="{{ url_for('register') }}">
+            <button class="button is-outlined is-link" type="button">Register</button>
+        </a>
+    </div>
+    <div class="column is-narrow">
+        <a href="{{ url_for('login') }}">
+            <button class="button is-outlined is-link" type="button">Login</button>
+        </a>
+    </div>
+</div>
 </div>
 {% endif %}
 {% endblock main %}

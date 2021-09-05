@@ -1,3 +1,13 @@
+const navBurger = document.querySelector(".navbar-burger");
+const navMenu = document.querySelector(".navbar-menu");
+const navButtons = document.querySelectorAll(".navbar-end .button");
+
+navBurger.addEventListener("click", () => {
+    navBurger.classList.toggle("is-active");
+    navMenu.classList.toggle("is-active");
+    navButtons.forEach(btn => btn.classList.toggle("is-inverted"));
+});
+
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
@@ -76,7 +86,7 @@ if (calendars && freetimesSection) {
         let start = new Date(createCalendar.startDate);
         let end = new Date(createCalendar.endDate);
         const resultsValid = validateFreetimes(start, end);
-        if (resultsValid) {
+        if (typeof resultsValid === "boolean") {
             start = start.toISOString();
             end = end.toISOString();
             axios.post("/times", {start, end}).then(resp => {
@@ -111,13 +121,15 @@ if (calendars && freetimesSection) {
     });
 
     createCalendar.on("select", datetime => {
-        const {start, end} = datetime.data.time;
+        const start = datetime.data.startDate;
+        const end = datetime.data.endDate;
         createStartTimeSpan.innerText = formatDatetime(start);
         createEndTimeSpan.innerText = formatDatetime(end);
     });
 
     editCalendar.on("select", datetime => {
-        const {start, end} = datetime.data.time;
+        const start = datetime.data.startDate;
+        const end = datetime.data.endDate;
         editStartTimeSpan.innerText = formatDatetime(start);
         editEndTimeSpan.innerText = formatDatetime(end);
     });
@@ -191,20 +203,22 @@ if (tasksSection) {
     const tasksList = tasksSection.querySelector("ul.tasks");
 
     addTaskButton.addEventListener("click", () => {
-        taskFormSection.classList.toggle("is-hidden");
-        tasksSection.classList.toggle("is-hidden");
-        addTaskButton.innerText = addTaskButton.innerText === "Cancel" ? "Add new task": "Cancel";
+        taskFormSection.classList.remove("is-hidden");
+        tasksSection.classList.add("is-hidden");
+        addTaskButton.classList.add("is-hidden");
     });
 
-    tasksList.addEventListener("click", e => {
-        if (e.target.tagName !== "BUTTON") return;
-        const taskId = +e.target.parentElement.dataset.id;
-        axios.delete(`/tasks/${taskId}`).then(resp => {
-            window.location.href = resp.data.url;
-        }).catch(err => {
-            console.error(err);
+    if (tasksList) {
+        tasksList.addEventListener("click", e => {
+            if (e.target.tagName !== "BUTTON") return;
+            const taskId = +e.target.parentElement.dataset.id;
+            axios.delete(`/tasks/${taskId}`).then(resp => {
+                window.location.href = resp.data.url;
+            }).catch(err => {
+                console.error(err);
+            });
         });
-    });
+    }
 }
 
 const quotesButton = document.querySelector("#quotes-button");
@@ -225,7 +239,6 @@ if (quotesButton) {
 
     quotesButton.addEventListener("click", async () => {
         if (quotes === null) {
-            console.log("Inside the if block");
             quotesButton.classList.add("is-loading");
             quotesButton.disabled = true;
             try {
@@ -237,7 +250,6 @@ if (quotesButton) {
             }
             quotesButton.classList.remove("is-loading");
             quotesButton.disabled = false;
-            console.log("Leaving the if block");
         }
         const ranNum = Math.floor(Math.random() * quotes.length);
         quotesDiv.innerHTML = createQuote(quotes[ranNum]);

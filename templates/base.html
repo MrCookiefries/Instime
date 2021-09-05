@@ -11,39 +11,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/static/lib/bulma-calendar.min.css">
 </head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('home_page') }}">Home</a></li>
+<body class="has-navbar-fixed-top">
+    <nav class="navbar has-shadow is-fixed-top is-primary">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{ url_for('home_page') }}">Home</a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="navbar-menu">
             {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('freetimes_view') }}">Freetimes</a></li>
-            <li><a href="{{ url_for('tasks_view') }}">Tasks</a></li>
-            <li><a href="{{ url_for('plans_view') }}">Plans</a></li>
-            <li>
-                <form action="{{ url_for('logout') }}" method="post">
-                    <button type="submit">Logout</button>
-                </form>
-            </li>
+            <div class="navbar-start">
+                <a class="navbar-item" href="{{ url_for('freetimes_view') }}">Freetimes</a>
+                <a class="navbar-item" href="{{ url_for('tasks_view') }}">Tasks</a>
+                <a class="navbar-item" href="{{ url_for('plans_view') }}">Plans</a>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <form action="{{ url_for('logout') }}" method="post">
+                        <button class="button is-black is-inverted is-outlined" type="submit">Log Out</button>
+                    </form>
+                </div>
+            </div>
             {% else %}
-            <li><a href="{{ url_for('register') }}">Register</a></li>
-            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a class="button is-black is-inverted is-outlined" href="{{ url_for('register') }}">Register</a>
+                </div>
+                <div class="navbar-item">
+                    <a class="button is-black is-inverted is-outlined" href="{{ url_for('login') }}">Log In</a>
+                </div>
+            </div>
             {% endif %}
-        </ul>
+        </div>
     </nav>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        <ul class=flashes>
+        <section class="section">
             {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
+            <div class="notification is-light is-{{ category }}">{{ message }}</div>
             {% endfor %}
-        </ul>
+        </section>
         {% endif %}
     {% endwith %}
-    {# add flashed messages #}
-    <main>
-        {% block main %}
-        {% endblock main %}
-    </main>
+    <section class="section">
+        <main class="container">
+            {% block main %}
+            {% endblock main %}
+        </main>
+    </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/static/lib/bulma-calendar.min.js"></script>
     <script src="/static/script.js"></script>

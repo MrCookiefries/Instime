@@ -1,29 +1,34 @@
-{% macro task_field(field) %}
-<div>
-    <label for="{{ field.id }}">
+{% macro task_field(field, type) %}
+<div class="field">
+    <label class="label subtitle is-4 has-text-info" for="{{ field.id }}">
         {{- field.label.text | title -}}
     </label>
-    {% if field == form.password %}
-        {{ field(autocomplete="on") }}
-    {% else %}
-        {{ field }}
-    {% endif %}
+    <div class="control">
+        {{ field(class_=type) }}
+    </div>
     {% if field.errors %}
-        <ul>
         {% for error in field.errors %}
-            <li class="error">{{ error }}</li>
+            <p class="error help is-danger">{{ error }}</p>
         {% endfor %}
-        </ul>
     {% endif %}
 </div>
 {% endmacro %}
 <form method="POST">
 	{{ form.hidden_tag() }}
-	{{ task_field(form.title) }}
-    {{ task_field(form.description) }}
-    {{ task_field(form.status) }}
-    {{ task_field(form.time_estimate) }}
-    {{ task_field(form.priority) }}
-    {{ task_field(form.freetimes) }}
-	<button type="submit">{{ submit }}</button>
+	{{ task_field(form.title, "input") }}
+    {{ task_field(form.description, "textarea") }}
+    {{ task_field(form.status, "select") }}
+    {{ task_field(form.time_estimate, "input") }}
+    {{ task_field(form.priority, "select") }}
+    {{ task_field(form.freetimes, "checkbox") }}
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link" type="submit">{{ submit }}</button>
+        </div>
+        <div class="control">
+            <a href="{{ url_for('tasks_view') }}">
+                <button class="button is-warning" type="button">Cancel</button>
+            </a>
+        </div>
+    </div>
 </form>

@@ -59,7 +59,7 @@ def register():
         user = User.register(email=email, password=password, name=name)
         db.session.commit()
         login_user(user, True)
-        flash("Successfully created account.", "info")
+        flash("Successfully created account.", "success")
         next = request.args.get("next")
         if not is_safe_url(next):
             return abort(400)
@@ -78,7 +78,7 @@ def login():
             form.email.errors.append("Email or Password is incorrect.")
         else:
             login_user(user, True)
-            flash("Successfully logged into your account.", "info")
+            flash("Successfully logged into your account.", "success")
             next = request.args.get("next")
             if not is_safe_url(next):
                 return abort(400)
@@ -90,7 +90,7 @@ def login():
 def logout():
     """logs a user out"""
     logout_user()
-    flash("Successfully logged out.", "info")
+    flash("Successfully logged out.", "success")
     return redirect(url_for("home_page"))
 
 # ***********************************************************************
@@ -130,7 +130,7 @@ def freetimes_view():
             freetime = Freetime(start_time=start_time, end_time=end_time, user_id=current_user.id)
             db.session.add(freetime)
             db.session.commit()
-            flash("Successfully added your new freetime.", "info")
+            flash("Successfully added your new freetime.", "success")
             return jsonify(url=url_for("freetimes_view"))
         return jsonify(error="required data not provided (start/end) times")
 
@@ -142,7 +142,7 @@ def freetimes_view():
             if request.method == "DELETE":
                 db.session.delete(freetime)
                 db.session.commit()
-                flash("Successfully deleted your freetime.", "info")
+                flash("Successfully deleted your freetime.", "success")
                 return jsonify(url=url_for("freetimes_view"))
 
             start_time = request.json.get("start")
@@ -153,7 +153,7 @@ def freetimes_view():
                 freetime.start_time = start_time
                 freetime.end_time = end_time
                 db.session.commit()
-                flash("Successfully updated your freetime.", "info")
+                flash("Successfully updated your freetime.", "success")
                 return jsonify(url=url_for("freetimes_view"))
 
         if request.method == "DELETE":
@@ -190,7 +190,7 @@ def tasks_view():
         task.user_id = current_user.id
         db.session.add(task)
         db.session.commit()
-        flash("Successfully created your task.", "info")
+        flash("Successfully created your task.", "success")
         return redirect(url_for("tasks_view"))
     return render_template("user/tasks.html", tasks=tasks, form=form, submit="Add")
 
@@ -203,7 +203,7 @@ def delete_task(id):
         return jsonify(error="must provide the (id) of a task the user owns")
     db.session.delete(task)
     db.session.commit()
-    flash("Successfully deleted your task.", "info")
+    flash("Successfully deleted your task.", "success")
     return jsonify(url=url_for("tasks_view"))
 
 @app.route("/tasks/<int:id>/edit", methods=["GET", "POST"])
@@ -212,7 +212,7 @@ def update_task(id):
     """updates a user's task"""
     task = Task.query.get_or_404(id)
     if task.user_id != current_user.id:
-        flash("You must own the task to edit it.", "info")
+        flash("You must own the task to edit it.", "warning")
         return redirect(url_for("tasks_view"))
     form = UserTaskForm(obj=task)
     form.freetimes.choices = [(f.id, f"{f.pretty_start} - {f.pretty_end}") for f in current_user.freetimes]
@@ -224,14 +224,14 @@ def update_task(id):
         for freetime_id in freetimes:
             freetime = Freetime.query.get(freetime_id)
             if not freetime:
-                flash("Oh no, no freetime was found in our database.", "info")
+                flash("Oh no, no freetime was found in our database.", "danger")
             elif freetime.user_id != current_user.id:
-                flash("You don't own that freetime and can't assign tasks to it.", "info")
+                flash("You don't own that freetime and can't assign tasks to it.", "danger")
             else:
                 task_freetimes.append(freetime)
         task.freetimes = task_freetimes
         db.session.commit()
-        flash("Successfully updated your task.", "info")
+        flash("Successfully updated your task.", "success")
         next = request.args.get("next")
         if not is_safe_url(next):
             return abort(400)
