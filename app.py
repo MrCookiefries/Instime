@@ -7,7 +7,6 @@ from requests import get
 import os
 
 from models import db, connect_db, User, Task, Freetime, blocks
-from secret import SECRET_KEY
 from forms import CreateUserForm, LoginUserForm, UserTaskForm
 
 # ***********************************************************************
@@ -18,7 +17,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "postgresql:///instime")
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "p-olIJg0C1yu1oUqaccDgztpWa-J1Ag0")
 
 CORS(app)
 login_manager = LoginManager()
