@@ -1,16 +1,20 @@
+// nagivation bar essential elements
 const navBurger = document.querySelector(".navbar-burger");
 const navMenu = document.querySelector(".navbar-menu");
 const navButtons = document.querySelectorAll(".navbar-end .button");
 
+// mobile device responsive menu
 navBurger.addEventListener("click", () => {
     navBurger.classList.toggle("is-active");
     navMenu.classList.toggle("is-active");
     navButtons.forEach(btn => btn.classList.toggle("is-inverted"));
 });
 
+// date used to restrict setting available time periods in the past
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
+// the bulma calendars with configuration
 const calendars = bulmaCalendar.attach('input[type="date"]', {
     type: "datetime",
     dateFormat: "dd.MM.yyyy", // date/time formats based on date-fns2
@@ -23,6 +27,11 @@ const calendars = bulmaCalendar.attach('input[type="date"]', {
     allowSameDayRange: true
 });
 
+/**
+ * formats a date into a nice string to display
+ * @param dt datetime object
+ * @returns string of formatted date
+ */
 function formatDatetime(dt) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr',
@@ -37,9 +46,11 @@ function formatDatetime(dt) {
     return `${month} ${day}, ${year} @ ${hours}:${minutes}`;
 }
 
+// Freetimes page
 const freetimesSection = document.querySelector("section.freetimes");
 
 if (calendars && freetimesSection) {
+    // elements on the freetimes page
     const addFreetimeButton = document.querySelector("#add-freetime");
 
     const createFreetimeSection = document.querySelector("section.create-freetime");
@@ -56,12 +67,20 @@ if (calendars && freetimesSection) {
     const editEndTimeSpan = document.querySelector("#edit-end-time");
     const editFreetimeButton = document.querySelector("#edit-freetime");
 
+    // manipulates DOM to toggle view to show the freetime form & hide the list of freetimes
     addFreetimeButton.addEventListener("click", () => {
         createFreetimeSection.classList.toggle("is-hidden");
         freetimesSection.classList.toggle("is-hidden");
         editFreetimeSection.classList.add("is-hidden");
     });
 
+    /**
+     * helper function to ensure user's don't select impossible free times,
+     * such as a time that ends before they're able to to start working.
+     * @param start datetime object of starting time
+     * @param end datetime object of ending time
+     * @returns either an error message to display or true
+     */
     function validateFreetimes(start, end) {
         let errMsg;
         if (start.getFullYear() === end.getFullYear()) {
@@ -82,6 +101,7 @@ if (calendars && freetimesSection) {
         return errMsg ? errMsg: true;
     }
 
+    // sends a post request to create a new freetime or displays an error message
     createFreetimeButton.addEventListener("click", () => {
         let start = new Date(createCalendar.startDate);
         let end = new Date(createCalendar.endDate);
@@ -100,8 +120,9 @@ if (calendars && freetimesSection) {
         }
     });
 
-    let freetimeId;
+    let freetimeId; // required to know to send to server
 
+    // sends a patch request to update a freetime or displays an error
     editFreetimeButton.addEventListener("click", () => {
         let start = new Date(editCalendar.startDate);
         let end = new Date(editCalendar.endDate);
@@ -120,6 +141,7 @@ if (calendars && freetimesSection) {
         }
     });
 
+    // updates the UI when the input is changed
     createCalendar.on("select", datetime => {
         const start = datetime.data.startDate;
         const end = datetime.data.endDate;
@@ -127,6 +149,7 @@ if (calendars && freetimesSection) {
         createEndTimeSpan.innerText = formatDatetime(end);
     });
 
+    // updates the UI when the input is changed
     editCalendar.on("select", datetime => {
         const start = datetime.data.startDate;
         const end = datetime.data.endDate;
@@ -134,6 +157,7 @@ if (calendars && freetimesSection) {
         editEndTimeSpan.innerText = formatDatetime(end);
     });
 
+    // handles clicks on the freetimes section to delete freetimes or to edit them
     freetimesSection.addEventListener("click", e => {
         if (e.target.tagName === "BUTTON") {
             id = +e.target.parentElement.dataset.id;
@@ -195,13 +219,16 @@ if (calendars && freetimesSection) {
     }
 }
 
+// Tasks page
 const tasksSection = document.querySelector("section.tasks");
 
 if (tasksSection) {
+    // elements on the tasks page
     const addTaskButton = document.querySelector("#add-task");
     const taskFormSection = document.querySelector("#task-form");
     const tasksList = tasksSection.querySelector("ul.tasks");
 
+    // manips the dom to show the add task form & hide the list of tasks
     addTaskButton.addEventListener("click", () => {
         taskFormSection.classList.remove("is-hidden");
         tasksSection.classList.add("is-hidden");
@@ -209,6 +236,7 @@ if (tasksSection) {
     });
 
     if (tasksList) {
+        // sends a delete request to remove a task
         tasksList.addEventListener("click", e => {
             if (e.target.tagName !== "BUTTON") return;
             const taskId = +e.target.parentElement.dataset.id;
@@ -221,10 +249,16 @@ if (tasksSection) {
     }
 }
 
+// button to generate some quotes
 const quotesButton = document.querySelector("#quotes-button");
 
 if (quotesButton) {
 
+    /**
+     * makes an HTML string for a quote
+     * @param quote JS object from API containing text & author
+     * @returns string of HTML to display the quote
+     */
     function createQuote(quote) {
         return `
             <figure>
@@ -234,11 +268,14 @@ if (quotesButton) {
         `;
     }
 
+    // list of quotes & the display box for them
     let quotes = JSON.parse(localStorage.getItem("quotes"));
     const quotesDiv = document.querySelector("#quotes");
 
+    // if quotes already exist in localstorage, use them, else fetch quotes from the server
     quotesButton.addEventListener("click", async () => {
         if (quotes === null) {
+            // disable button & show loading while it fetches data
             quotesButton.classList.add("is-loading");
             quotesButton.disabled = true;
             try {
@@ -248,9 +285,11 @@ if (quotesButton) {
             } catch(err) {
                 console.error(err);
             }
+            // allow button to be clicked again & stops loading animation
             quotesButton.classList.remove("is-loading");
             quotesButton.disabled = false;
         }
+        // pick a random quote from the list of quotes to display
         const ranNum = Math.floor(Math.random() * quotes.length);
         quotesDiv.innerHTML = createQuote(quotes[ranNum]);
     });

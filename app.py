@@ -185,8 +185,20 @@ def tasks_view():
     form.freetimes.choices = [(f.id, f"{f.pretty_start} - {f.pretty_end}") for f in current_user.freetimes]
     if form.validate_on_submit():
         task = Task()
+        freetimes = form.freetimes.data
+        form.__delitem__("freetimes")
         form.populate_obj(task)
         task.user_id = current_user.id
+        task_freetimes = []
+        for freetime_id in freetimes:
+            freetime = Freetime.query.get(freetime_id)
+            if not freetime:
+                flash("Oh no, no freetime was found in our database.", "danger")
+            elif freetime.user_id != current_user.id:
+                flash("You don't own that freetime and can't assign tasks to it.", "danger")
+            else:
+                task_freetimes.append(freetime)
+        task.freetimes = task_freetimes
         db.session.add(task)
         db.session.commit()
         flash("Successfully created your task.", "success")
