@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,18 @@
         Instime - {% block title %}{% endblock title %}
     </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/static/lib/bulma-calendar.min.css">
+    <meta name="title" property="og:title" content="Instime" />
+    <meta name="type" property="og:type" content="website" />
+    <meta name="image" property="og:image" content="https://instime.herokuapp.com/static/imgs/home.png" />
+    <meta name="description" property="og:description"
+        content="A task manager web app that lets you set your available times so that you may then assign tasks to those times. Sort out & view your tasks through their importance level." />
+    <meta name="author" property="og:author" content="Michael Copeland" />
 </head>
+
 <body class="has-navbar-fixed-top">
     <nav class="navbar has-shadow is-fixed-top is-primary">
         <div class="navbar-brand">
@@ -48,13 +58,13 @@
         </div>
     </nav>
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <section class="section">
-            {% for category, message in messages %}
-            <div class="notification is-light is-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        </section>
-        {% endif %}
+    {% if messages %}
+    <section class="section">
+        {% for category, message in messages %}
+        <div class="notification is-light is-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </section>
+    {% endif %}
     {% endwith %}
     <section class="section">
         <main class="container">
@@ -62,8 +72,11 @@
             {% endblock main %}
         </main>
     </section>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/static/lib/bulma-calendar.min.js"></script>
     <script src="/static/script.js"></script>
 </body>
+
 </html>
